@@ -9,14 +9,15 @@ contract TokenERC20 {
     uint8 public decimals = 18;
     // 18 decimals is the strongly suggested default, avoid changing it
     uint256 public totalSupply;
-
-    // Keep track of the amount of ether in the contract
-    uint256 private contract_ether;
-
+    address public owner;
+    
     // This creates an array with all balances
     mapping (address => uint256) public balanceOf;
     mapping (address => mapping (address => uint256)) public allowance;
-
+    
+    // Mapping from address to how much ether that address has sent to us.
+    mapping (address => uint256) public etherSent;  
+    
     // This generates a public event on the blockchain that will notify clients
     event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -31,12 +32,14 @@ contract TokenERC20 {
     function TokenERC20(
         uint256 initialSupply,
         string tokenName,
-        string tokenSymbol
+        string tokenSymbol,
+        address contractOwner
     ) public {
         totalSupply = initialSupply * 10 ** uint256(decimals);  // Update total supply with the decimal amount
         balanceOf[msg.sender] = totalSupply;                // Give the creator all initial tokens
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
+        owner = contractOwner;                              // Owner for ethereum transfer purposes
     }
 
 
@@ -83,42 +86,45 @@ contract TokenERC20 {
      * Send `_value` tokens to `_to` on behalf of `_from`
      *
      * @param _from The address of the sender
-     * @param _to The address of the recipient
+     * @param _to The address of the recipienttime 
      * @param _value the amount to send
      */
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= allowance[_from][msg.sender]);     // Check allowance
-        allowance[_from][msg.sender] -= _value;
+        //require(_value <= allowance[_from][msg.sender]);     // Check allowance
+        //allowance[_from][msg.sender] -= _value;
         _transfer(_from, _to, _value);
         return true;
     }
 
-
     /**
-     * Returns the ether balance of the contract in wei.
-     */
-    function getBalance() public returns (uint256 contract_balance) {
-        address contractAddr = this;
-        return contractAddr.balance;
-    }
-
-    /**
-     * Allow the contract to accept Ether.
-     *
-     * Accepts ether from a sender and allows sender to buy numTokens
-     *  from a specified address for the ether that they sent.
-     */
-     function buyTokenFrom(address _from, uint256 numTokens) public payable {
-
-         // Make sure the _from account has enough tokens to fund the transaction
-         require(balanceOf[_from] >= numTokens);
-
-         // Transfer ether to the from account
-         bool success = _from.send(msg.value);
-         if (success) {
-             transferFrom(_from, msg.sender, numTokens);
-         }
+     * Allows users to send ethereum to this address. Transfers it to the owner.
+     * Then transfers the appropriate amount of tokens from the owner to the
+     * sender.
+     */ 
+     function() payable {
+         //etherSent[msg.sender] += msg.value;
+         owner.transfer(msg.value);
+         uint256 tokens = msg.value; 
+         transferFrom(owner, msg.sender, tokens);
      }
+
+    // /**
+    //  * Allow the contract to accept Ether.
+    //  *
+    //  * Accepts ether from a sender and allows sender to buy numTokens
+    //  *  from a specified address for the ether that they sent.
+    //  */
+    //  function buyTokenFrom(address _from, uint256 numTokens) public payable {
+
+    //      // Make sure the _from account has enough tokens to fund the transaction
+    //      require(balanceOf[_from] >= numTokens);
+
+    //      // Transfer ether to the from account
+    //      bool success = _from.send(msg.value);
+    //      if (success) {
+    //          transferFrom(_from, msg.sender, numTokens);
+    //      }
+    //  }
 
     /**
      * Set allowance for other address
