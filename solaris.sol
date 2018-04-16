@@ -1,5 +1,52 @@
 pragma solidity ^0.4.16;
 
+// struct Heap[T] {
+//     T[] data;
+// }
+
+
+// library MinHeap_impl[T] {
+//   // using Heap[T] = T[]; ?
+//   function insert(Heap[T] storage _heap, T _value)
+//   {
+//     _heap.data.length++;
+//     for (
+//       uint _index = _heap.data.length - 1;
+//       _index > 0 && _value < _heap.data[_index / 2];
+//       _index /= 2)
+//     {
+//       _heap.data[_index] = _heap.data[_index / 2];
+//     }
+//     _heap.data[_index] = _value;
+//   }
+  
+//   function top(Heap[T] storage _heap) returns (T)
+//   {
+//     return _heap.data[0];
+//   }
+  
+//   function pop(Heap[T] storage _heap)
+//   {
+//     T storage last = _heap.data[_heap.data.length - 1];
+//     for (
+//       uint index = 0;
+//       2 * index < _heap.data.length
+//       ;)
+//     {
+//       uint nextIndex = 2 * index;
+//       if (2 * index + 1 < _heap.data.length && _heap.data[2 * index + 1] < _heap.data[2 * index])
+//         nextIndex = 2 * index + 1;
+//       if (_heap.data[nextIndex] < last)
+//         _heap.data[index] = _heap.data[nextIndex];
+//       else
+//         break;
+//       index = nextIndex;
+//     }
+//     _heap.data[index] = last;
+//     _heap.data.length--;
+//   }
+// }
+
 interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
 
 contract TokenERC20 {
@@ -16,7 +63,12 @@ contract TokenERC20 {
     mapping (address => mapping (address => uint256)) public allowance;
     
     // Mapping from address to how much ether that address has sent to us.
-    mapping (address => uint256) public etherSent;  
+    // using MinHeap_impl[uint] for Heap[uint];
+    uint256 private maxBid;
+    address private maxBidder;
+    
+    uint lastDrop;
+    uint dropInterval;
     
     // This generates a public event on the blockchain that will notify clients
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -33,6 +85,7 @@ contract TokenERC20 {
         uint256 initialSupply,
         string tokenName,
         string tokenSymbol,
+        uint interval,
         address contractOwner
     ) public {
         totalSupply = initialSupply * 10 ** uint256(decimals);  // Update total supply with the decimal amount
@@ -40,6 +93,9 @@ contract TokenERC20 {
         name = tokenName;                                   // Set the name for display purposes
         symbol = tokenSymbol;                               // Set the symbol for display purposes
         owner = contractOwner;                              // Owner for ethereum transfer purposes
+        
+        lastDrop = now;
+        dropInterval = interval;
     }
 
 
@@ -101,12 +157,43 @@ contract TokenERC20 {
      * Then transfers the appropriate amount of tokens from the owner to the
      * sender.
      */ 
-     function() payable {
-         //etherSent[msg.sender] += msg.value;
-         owner.transfer(msg.value);
-         uint256 tokens = msg.value; 
-         transferFrom(owner, msg.sender, tokens);
-     }
+    function() payable {
+        // This user is placing a bid
+         
+        // Make sure this bid is higher
+        assert(msg.value > maxBid);
+
+        // Send back ether to old highest bidder
+        if (maxBidder != 0x0) {
+            maxBidder.transfer(maxBid);
+        }
+        
+        // Set new highest bidder
+        maxBid = msg.value;
+        maxBidder = msg.sender;
+        
+        releaseToken();
+    }
+     
+    function releaseToken() {
+        if (now >= lastDrop + dropInterval) {
+            // Give out a token to the highest bidder, and drop all other bids
+            uint256 tokens = maxBid;
+            owner.transfer(maxBid);
+            transferFrom(owner, maxBidder, tokens);
+            
+            maxBid = 0;
+            maxBidder = 0x0;
+        }
+    }
+     
+    //  function bid(uint256 ethAmount) public {
+    //      // This user is placing a bid
+    //      assert(msg.sender)
+    //  }
+     
+     
+     
 
     // /**
     //  * Allow the contract to accept Ether.
