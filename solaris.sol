@@ -48,8 +48,8 @@ pragma solidity ^0.4.16;
 // }
 
 interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
-
-contract TokenERC20 {
+import "github.com/oraclize/ethereum-api/oraclizeAPI.sol";
+contract TokenERC20 is usingOraclize {
     // Public variables of the token
     string public name;
     string public symbol;
@@ -66,9 +66,12 @@ contract TokenERC20 {
     // using MinHeap_impl[uint] for Heap[uint];
     uint256 private maxBid;
     address private maxBidder;
+    uint numBidders;
     
-    uint lastDrop;
     uint dropInterval;
+    
+    uint public test1;
+    uint public test2;
     
     // This generates a public event on the blockchain that will notify clients
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -94,8 +97,10 @@ contract TokenERC20 {
         symbol = tokenSymbol;                               // Set the symbol for display purposes
         owner = contractOwner;                              // Owner for ethereum transfer purposes
         
-        lastDrop = now;
         dropInterval = interval;
+        test1 = 0;
+        test2 = 0;
+        
     }
 
 
@@ -151,6 +156,16 @@ contract TokenERC20 {
         _transfer(_from, _to, _value);
         return true;
     }
+    
+    function callThisToStart() {
+        oraclize_query(dropInterval, "URL", "");
+    }
+    
+    function __callback(bytes32 myid, string result) {
+        if (msg.sender != oraclize_cbAddress()) throw;
+        releaseToken2();
+        callThisToStart();
+    }
 
     /**
      * Allows users to send ethereum to this address. Transfers it to the owner.
@@ -160,9 +175,13 @@ contract TokenERC20 {
     function() payable {
         // This user is placing a bid
          
-        // Make sure this bid is higher
-        assert(msg.value > maxBid);
-
+        // Make sure this bid is higher. If not return money
+        if (msg.value <= maxBid) {
+            msg.sender.transfer(msg.value);
+        }
+        
+        numBidders += 1;
+        
         // Send back ether to old highest bidder
         if (maxBidder != 0x0) {
             maxBidder.transfer(maxBid);
@@ -171,13 +190,13 @@ contract TokenERC20 {
         // Set new highest bidder
         maxBid = msg.value;
         maxBidder = msg.sender;
-        
-        releaseToken();
     }
-     
-    function releaseToken() {
-        if (now >= lastDrop + dropInterval) {
+    
+    function releaseToken2() {
             // Give out a token to the highest bidder, and drop all other bids
+        test1 = test2;
+        test2 = now;
+        if (maxBidder != 0x0) {
             uint256 tokens = maxBid;
             owner.transfer(maxBid);
             transferFrom(owner, maxBidder, tokens);
@@ -186,12 +205,6 @@ contract TokenERC20 {
             maxBidder = 0x0;
         }
     }
-     
-    //  function bid(uint256 ethAmount) public {
-    //      // This user is placing a bid
-    //      assert(msg.sender)
-    //  }
-     
      
      
 
