@@ -125,19 +125,19 @@ contract TokenERC20 {
      */
      function resellTicketFor(uint256 price) {
          require(price != 0);
-         require(balanceOf[msg.sender] >= 1);
+         require(balanceOf[msg.sender] >= 1 * 10 ** uint256(decimals));
          
          resellerToPrice[msg.sender] = price;
          
          // The contract holds on to the token to make sure the reseller cannot transfer this token after posting
-         transferFrom(msg.sender, owner, 1);
+         transferFrom(msg.sender, owner, 1 * 10 ** uint256(decimals));
      }
      
      function cancelResellingTicket() {
          require(resellerToPrice[msg.sender] != 0);
          
          resellerToPrice[msg.sender] = 0;
-         transferFrom(owner, msg.sender, 1);
+         transferFrom(owner, msg.sender, 1 * 10 ** uint256(decimals));
      }
      
      
@@ -155,7 +155,7 @@ contract TokenERC20 {
          require(resellerToPrice[ticketOwner] == price);
          require(buyerToAmount[msg.sender] >= price);
          
-         transferFrom(owner, msg.sender, 1);
+         transferFrom(owner, msg.sender, 1 * 10 ** uint256(decimals));
          ticketOwner.transfer(price);
          
          // Reset values
@@ -179,16 +179,15 @@ contract TokenERC20 {
     
     
      /**
-      * Checks whether a byte array equals the given integer. Used for 
+      * Checks whether the current message is a bid for a resold ticket. Used for 
       * comparisons with msg.data
       */
-    function equal(uint a, bytes data) constant returns (bool) {
-        uint x = 0;
-        for (uint i = 0; i < 32; i++) {
-            uint b = uint(data[35 - i]);
-            x += b * 256**i;
+    function isSecondaryBid(bytes data) constant returns (bool) {
+        if (data.length != 2) {
+            return false;
         }
-        return a == x;
+        
+        return uint(data[0]) == 18 && uint(data[1]) == 52;
     }
     
      /** Consumer action
@@ -201,7 +200,7 @@ contract TokenERC20 {
     function() payable {
         // This user is placing a bid
         
-        if (equal(4660, msg.data)) {
+        if (isSecondaryBid(msg.data)) {
             // 4660 is hex for 0x1234
             // This is a consumer trying to buy a second hand ticket
             buyerToAmount[msg.sender] += msg.value;
