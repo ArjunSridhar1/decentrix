@@ -106,7 +106,7 @@ contract TokenERC20 {
     function releaseTicket() {
             // Give out a token to the highest bidder, and drop all other bids
         if (maxBidder != 0x0) {
-            uint256 tokens = 1;
+            uint256 tokens = 1 * 10 ** uint256(decimals);
             owner.transfer(maxBid);
             transferFrom(owner, maxBidder, tokens);
             
