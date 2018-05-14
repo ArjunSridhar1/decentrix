@@ -2,15 +2,15 @@
 
 ## Who Are We?
 There are 3 main problems in the music ticketing industry:
-  - Fake tickets sold in the secondary market
+  - Fake tickets are sold on the secondary market
   - Ticket resellers hike up prices.
   - Bots buy up a lot of tickets and hike up prices as well.
 In each situation, none of the profits are going back to the performing artist! We are solving this issue with blockchain technology.
 
-Decentrix is a blockchain ticketing platform which ensures authentic tickets and profit sharing with artists and venues.
+Decentrix is a blockchain ticketing platform which *ensures authentic tickets* and *profit sharing with artists and venues*.
 
 ## Minumum Viable Product
-Currently, we have created a smart contract deployed acting as the managing system for a certain concert. This contract manages 2 processes: the primary seller selling tickets to consumers, and consumers reselling tickets to other consumers. 
+We use the Ethereum platform to tokenize ticket sales. Currently, we have created a smart contract template acting as the managing system for a certain concert. We have deployed this contract several times to test the functionality. This contract manages 2 processes: the primary seller selling tickets to consumers, and consumers reselling tickets to other consumers. 
 
 In this contract, a preset number of tokens are created, each one representing a ticket. Customers can bid ethereum by sending it to this contract, and, if they are selected as the highest bidder, they receive a ticket from the primary seller.
 
