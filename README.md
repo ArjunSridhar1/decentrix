@@ -2,9 +2,9 @@
 
 ## Who Are We?
 There are 3 main problems in the music ticketing industry:
-  1. Fake tickets sold in the secondary market
-  2. Ticket resellers hike up prices.
-  3. Bots buy up a lot of tickets and hike up prices as well.
+  - Fake tickets sold in the secondary market
+  - Ticket resellers hike up prices.
+  - Bots buy up a lot of tickets and hike up prices as well.
 In each situation, none of the profits are going back to the performing artist! We are solving this issue with blockchain technology.
 
 Decentrix is a blockchain ticketing platform which ensures authentic tickets and profit sharing with artists and venues.
@@ -17,10 +17,11 @@ In this contract, a preset number of tokens are created, each one representing a
 Customers can also trade these tokens with another customer for ethereum with protocols that we have defined. Below we define protocols for both the consumer selling the token and the consumer buying the token in the secondary market. These would be abstracted away with a UI. 
 
 ## Deploying the MVP
-The solidity contract needs to deployed to see the proof-of-concept.  You need to have Metamask installed in your browser.You need two Metamask accounts for this to work: Account 1 is the ticket primary seller, Account 2 is the ticket buyer.
+The solidity contract needs to deployed to see the proof-of-concept.  You need to have Metamask installed in your browser.You need two Metamask accounts for this to work. For this entire tutorial, **Account 1 is the primary ticket seller, Account 2 is the ticket buyer / concert-goer.** Account 2 can also be a consumer reselling tickets on the secondary market.
 
 Please use the Rinkeby test network for this proof-of-concept. For ether to play around with, use the Rinkeby Test Network Faucet. 
 
+### As the Primary Seller
 To deploy the contract with Account 1, you can use the online Remix solidity editor.
   1. Visit https://remix.ethereum.org/.
   2. Replace the text in the left window with the entire body of the contract in this repo.
@@ -32,6 +33,7 @@ To deploy the contract with Account 1, you can use the online Remix solidity edi
   6. You should see your pending transactions in the window below now show all the functions listed in this smart contract. Now you have now deployed the contract, and are connected to the contract with Account 1!
   7. In your Metamask browser addon, add the contract address as a new Token. You should see that Account 1 owns all of the tickets initially. 
 
+### As a Concert-Goer
 To connect to the contract with Account 2, you can use the online Remix solidity editor.
 In your Metamask wallet, add our test token by entering the contract address from the previous part.
   1. Visit https://remix.ethereum.org/ in a new tab. 
