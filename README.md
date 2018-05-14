@@ -10,11 +10,13 @@ In each situation, none of the profits are going back to the performing artist! 
 Decentrix is a blockchain ticketing platform which ensures authentic tickets and profit sharing with artists and venues.
 
 ## Minumum Viable Product
-Currently, we have a smart contract deployed acting as the managing system for a certain concert as the primary seller of tickets. In this contract, a variable number of tokens have been created, 
-each one representing a ticket. Customers can bid ethereum by sending it to this contract, and, if they are selected as the highest bidder, they receive a ticket.
-Customers can also trade these tokens with another customer for ethereum with a function that we have defined. Lastly, a customer can claim his or her ticket by using our contract's claim function, allowing them to actually receive their ticket.
+Currently, we have created a smart contract deployed acting as the managing system for a certain concert. This contract manages 2 processes: the primary seller selling tickets to consumers, and consumers reselling tickets to other consumers. 
 
-## Interacting with the MVP
+In this contract, a preset number of tokens are created, each one representing a ticket. Customers can bid ethereum by sending it to this contract, and, if they are selected as the highest bidder, they receive a ticket from the primary seller.
+
+Customers can also trade these tokens with another customer for ethereum with protocols that we have defined. Below we define protocols for both the consumer selling the token and the consumer buying the token in the secondary market. These would be abstracted away with a UI. 
+
+## Deploying the MVP
 The solidity contract needs to deployed to see the proof-of-concept.  You need to have Metamask installed in your browser.You need two Metamask accounts for this to work: Account 1 is the ticket primary seller, Account 2 is the ticket buyer.
 
 Please use the Rinkeby test network for this proof-of-concept. For ether to play around with, use the Rinkeby Test Network Faucet. 
@@ -30,7 +32,7 @@ To deploy the contract with Account 1, you can use the online Remix solidity edi
   6. You should see your pending transactions in the window below now show all the functions listed in this smart contract. Now you have now deployed the contract, and are connected to the contract with Account 1!
   7. In your Metamask browser addon, add the contract address as a new Token. You should see that Account 1 owns all of the tickets initially. 
 
-To interact with the contract with Account 2, you can use the online Remix solidity editor.
+To connect to the contract with Account 2, you can use the online Remix solidity editor.
 In your Metamask wallet, add our test token by entering the contract address from the previous part.
   1. Visit https://remix.ethereum.org/ in a new tab. 
   2. Replace the text in the left window with the entire body of the contract in this repo.
@@ -39,7 +41,8 @@ In your Metamask wallet, add our test token by entering the contract address fro
   5. In the Run tab, in the "Load contract from Address" field, put the follwing contract address without quotes. Click the "At Address" button. 
      You should see your pending transactions in the window below now show all the functions listed in this smart contract. Now you are connected with Account 2 to the contract you deployed with Account 1!
   6. In your Metamask browser addon, add the contract address as a new Token, if the token is not already listed. You should see that Account 2 owns 0 tickets initially.
-     
+
+## Interacting with the MVP
 You can interact with the contract by filling in inputs to the functions and clicking their buttons. I will be referring to the ticket buyer as Account 2 and the primary ticket seller as Account 1 for clarity as to what a consumer can do vs a primary seller. Below are a few things you can do to interact:
 
 NOTE: All prices require 18 additional zeros. For example, if you are selling/buying a ticket for 1 ether, the price you input to the system is 1000000000000000000.
