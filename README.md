@@ -14,7 +14,9 @@ We use the Ethereum platform to tokenize ticket sales. Currently, we have create
 
 In this contract, a preset number of tokens are created, each one representing a ticket. Customers can bid ethereum by sending it to this contract, and, if they are selected as the highest bidder, they receive a ticket from the primary seller.
 
-Customers can also trade these tokens with another customer for ethereum with protocols that we have defined. Below we define protocols for both the consumer selling the token and the consumer buying the token in the secondary market. These would be abstracted away with a UI. 
+Customers can also trade these tokens with another customer for ethereum with protocols that we have defined. Below we define protocols for both the consumer selling the token and the consumer buying the token in the secondary market. These would be abstracted away with a UI.
+
+Although cuts on each transcation (going to either the artist or our company) have not been implemented yet, those changes will fit well with our current implementation. It involves introducting a new wallet argument for the artist, imposing some set percentage cut on every transaction (which is agreed upon deploying the contract), and transferring those funds to the artist's wallet regularly. However, the entire consumer / seller ecosystem is already implemented at this time.
 
 ## Deploying the MVP
 The solidity contract needs to deployed to see the proof-of-concept.  You need to have Metamask installed in your browser.You need two Metamask accounts for this to work. For this entire tutorial, **Account 1 is the primary ticket seller, Account 2 is the ticket buyer / concert-goer.** Account 2 can also be a consumer reselling tickets on the secondary market.
@@ -55,8 +57,8 @@ NOTE: All prices require 18 additional zeros. For example, if you are selling/bu
   
 ## Future Steps
 We have plenty of improvements to make to take this MVP to a fully functioning system. Here are the most important improvements we hope to make:
+  - **Transaction Cuts** - See the last part of the "Minimum Viable Product" section above.
   - **Making a UI** - Interacting with the contract through the Remix IDE is too low level for a customer. We want to abstract away the complexity of the underlying technology by making an easy to use UI for both ticket buyers and sellers.
-  - **Improving Reselling Tickets** - As mentioned before, currently you need to know who you will buy from to buy a resold ticket. This will be fixed by adding a listing page for reselling tickets. A consumer wishing to buy a resold ticket can then browse this listing and select which ticket he/she would like to purchase. These listings will probably not be stored on the blockchain, but rather some other backing database for scalability reasons.
-  - **Lasting Bids** - Currently a consumer's bid on a ticket only lasts until the
   - **Different Types of Bids** - We currently only have one class of tickets. But we want to be able to release multiple types of tickets (General Admission, Nosebleeders, etc), each of which has a separate bidding pool.
   - **Claiming Seats and Tickets** - We want to attach seat preferences to bids, so when a consumer gets a ticket, they get the seat they want as well. we also would like to implement a conversion from token to QR code for a unique ticket.
+  - **Improving Reselling Tickets** - As mentioned before, currently you need to know who you will buy from to buy a resold ticket. This will be fixed by adding a listing page for reselling tickets. A consumer wishing to buy a resold ticket can then browse this listing and select which ticket he/she would like to purchase. These listings will probably not be stored on the blockchain, but rather some other backing database for scalability reasons.
