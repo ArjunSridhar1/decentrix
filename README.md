@@ -9,7 +9,7 @@ In each situation, none of the profits are going back to the performing artist! 
 
 Decentrix is a blockchain ticketing platform which *ensures authentic tickets* and *profit sharing with artists and venues*.
 
-## Minumum Viable Product
+## Minimum Viable Product
 We use the Ethereum platform to tokenize ticket sales. Currently, we have created a smart contract template acting as a ticket management system for a concert/event. We have deployed this contract several times to test the functionality. This contract manages 2 processes: the primary seller selling tickets to consumers (the primary market), and consumers reselling tickets to other consumers (the secondary market). 
 
 In this contract, a preset number of tokens are created, each one representing a ticket. Customers can bid ethereum by sending it to this contract, and, if they are selected as the highest bidder, they receive a ticket from the primary seller.
